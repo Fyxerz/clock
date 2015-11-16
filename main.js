@@ -1,79 +1,103 @@
+
 var date = new Date();
 
 var hours = date.getHours();
-var minutes = 55 // date.getMinutes();
+var minutes = date.getMinutes();
 
-console.log(date);
+function init() {
+    var nodes = document.querySelectorAll('div');
 
-console.log(hours);
-console.log(minutes);
+    checkHour(hours, minutes, nodes);
+    checkMinute(nodes);
+    refresh();
+}
 
-var nodes = document.querySelectorAll('div');
 
-function checkHour(hour) {
+function checkHour(hour, minute, nodes) {
 
-    if (hour > 12) {
-        // MAKE AM CLOCK = -12 + 8
-        hourDiv = hour - 4;
 
-        nodes[hourDiv].classList.add('active');
+    if (minute > 33) {
+        hour = hour + 1;
+        nodes[7].classList.add('active');
+
+        if (hour > 12) {
+            // MAKE AM CLOCK = -12 + 8
+            hourDiv = hour - 4;
+
+            nodes[hourDiv].classList.add('active');
+
+        }
+
+        else if(hour == 0) {
+            nodes[20].classList.add('active');
+        }
+
+        else {
+            hourDiv = hour + 8;
+
+            nodes[hourDiv].classList.add('active');      
+        }
     }
 
     else {
-        hourDiv = hour + 8;
+        nodes[8].classList.add('active');
 
-        nodes[hourDiv].classList.add('active');      
-    }
+        if (hour > 12) {
+            // MAKE AM CLOCK = -12 + 8
+            hourDiv = hour - 4;
+
+            nodes[hourDiv].classList.add('active');
+
+        }
+
+        else if(hour == 0) {
+            nodes[20].classList.add('active');
+        }
+
+        else {
+            hourDiv = hour + 8;
+
+            nodes[hourDiv].classList.add('active');      
+        }
+    };
+
     
 }
 
-
-
-function checkMinute() {
+function checkMinute(nodes) {
         // O'CLOCK
-    minuteIf(57, 3, nodes.length - 1);
+    minuteIf(57, 3, nodes.length - 1, nodes);
         // 5 PAST
-    minuteIf(3, 7, 5);
+    minuteIf(3, 7, 5, nodes);
         // 10 PAST
-    minuteIf(7, 13, 2);
+    minuteIf(7, 13, 2, nodes);
         // QUARTER PAST
-    minuteIf(13, 17, 3);
+    minuteIf(13, 17, 3, nodes);
         //  20 PAST
-    minuteIf(17, 23, 4);
+    minuteIf(17, 23, 4, nodes);
         // 25 PAST
-    minuteIf(23, 27, 4);
-    minuteIf(23, 27, 5);
+    minuteIf(23, 27, 4, nodes);
+    minuteIf(23, 27, 5, nodes);
         // HALF PAST
-    minuteIf(27, 33, 1);
-        // 25 TO
-    minuteIf(33, 37, 4);
-    minuteIf(33, 37, 5);
-        // 20 TO
-    minuteIf(37, 43, 4);
-        // QUARTER TO
-    minuteIf(43, 47, 3);
-        // 10 TO
-    minuteIf(47, 53, 2);
-        // 5 TO
-    minuteIf(53, 57, 5);
-
-        // ATIVATE PAST
-    minuteIf(3, 33, 8);
-        // ACTIVATE TO
-    minuteIf(33, 57, 7);
+    minuteIf(27, 33, 1, nodes);
 }
 
-function minuteIf(min, max, target) {
-    if (minutes > min && minutes <= max) {
-      nodes[target].classList.add('active');  
-    };  
-
-    if(minutes > 33 && minutes <= 57) {
-        checkHour(hours + 1);
+function minuteIf(min, max, target, nodes) {
+    if (minutes > min && minutes <= max || minutes < 60 - min && minutes >= 60 - max) {
+      nodes[target].classList.add('active');
     }
 }
 
+function refresh() {
+    setInterval(function() {
+        for (var i = 1; i < nodes.length; i++) {
+            nodes[i].classList.remove('active');
 
-checkHour(hours);
-checkMinute();
+            checkHour(hours, minutes);
+            checkMinute();
+        };
+    }, 60000);
+}
+
+init();
 
